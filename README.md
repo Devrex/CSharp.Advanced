@@ -1,20 +1,33 @@
-# Avancerad C#
+# C# Advanced
 
+Clone this repo to your machine by typing from the terminal (git bash or Wi):
+
+`git clone https://github.com/devrex/charp.advanced`
+
+When you need to update, do a `git stash && git pull -r && git stash pop`
 
 ## Topics covered
-* .NET Core
-* .NET 4 and C# 8
-* Visual Studio
 
+## Foundations
 * Object Orientation
 * Inheritance vs Interface
+* Struct vs Class
 * Design patterns
+
+* Operator overloading
+* Extension methods
 
 * Value- and reference types
 * Non-nullable and nullable types
-* Non-nullable reference types
+
+## Collections
 * Generics
 * Tuples and Value Tuples
+* Object and collection initializers
+* Iterators
+* Foreach vs for loops
+* The IEnumerable interface
+
 
 ## Linq
 * Projections
@@ -23,20 +36,16 @@
 * On demand execution
 * Aggregate functions
 
-Object and collection initializers
-Iterators
-Foreach vs for loops
-Explicit interfaces
-The IEnumerable interface
-Operator overloading
-Extension methods
 
-
+* Events
 * Delegates
 * Lambda expressions
 * Func<T> and Action<T>
 
-* Threads and Tasks
+## Asynchronous programming
+* Threads vs Tasks
 * Async and await
-Struct vs Class
-JSON Serialization
+
+
+
+* JSON Serialization
