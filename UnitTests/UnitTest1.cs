@@ -118,7 +118,80 @@ namespace UnitTests
             Assert.AreEqual(DateTime.MinValue, default(DateTime));
 
         }
-            [Test]
+
+        [Test]
+        public void OperatorOverloading()
+        {
+            var later = DateTime.UtcNow + TimeSpan.FromMinutes(10);
+
+            //button.onclick = function(){ }
+            //Button.Click += (s, e) => MessageBox.Show("Hit me!");
+
+            String s1 = "Bart";
+            String s2 = "Bart";
+
+            //compare values (strings) in java: s1.equals(s2)
+            //s1 == s2 is reference comparison, 
+
+            // == is overloaded for strings in c#
+            Assert.IsTrue(s1 == s2);
+
+
+        }
+
+        [Test]
+        public void OldTupleSyntax()
+        {
+            Tuple<string,string> t = Tuple.Create("name", "Bart");
+            Tuple<string, string, int> t2 = Tuple.Create("name", "Homer", 35);
+            Assert.AreEqual("Bart", t.Item2);
+
+            //syntactic sugar, but still ugly property names
+            var t3 = ("Marge", 32);
+            Assert.AreEqual(32, t3.Item2);
+
+            //deconstruction
+            var (name, age) = t3;
+
+            //works with arguments and return values
+            var coords = (20, 30);
+            var newcoords = Translate45(coords, 5);
+            Assert.AreEqual(25, newcoords.Item1);
+            Assert.AreEqual(35, newcoords.Item2);
+
+            //inline tuple
+            var (x, y) = Translate45((10, 20), 2);
+            Assert.AreEqual(12, x);
+            Assert.AreEqual(22, y);
+        }
+        [Test]
+        public void Nullable()
+        {
+            //append ? to value type T is syntactic sugar for Nullable<T>
+
+            int? i = null;
+            Nullable<int> j;
+
+            Assert.AreSame(typeof(int?), typeof(Nullable<int>));
+
+            //equivalent
+            int a = i.GetValueOrDefault();
+            int b = i ?? default(int);
+
+            //?? operator
+            int c = i ?? 42;
+
+
+            int sum = Add(100);
+            Assert.AreEqual(142, sum);
+
+            sum = Add(100, 100);
+            Assert.AreEqual(200, sum);
+
+
+        }
+
+        [Test]
         public void TryWithOutVariablePattern()
         {
             // next line will throw
@@ -156,5 +229,19 @@ namespace UnitTests
             if (odd) number = 13;
             else number = 42;
         }
+
+        static int Add(int a, int? b = null)
+        {
+            if (b == null) Console.WriteLine("Warn: no arg passed, using default");
+            return a + (b ?? 42); 
+        }
+
+        static (int,int) Translate45((int,int) coords, int delta)
+        {
+            var (x, y) = coords;
+            return (x + delta, y + delta);
+            Console.WriteLine(coords.GetType().Name);
+        }
+
     }
 }

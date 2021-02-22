@@ -22,6 +22,16 @@ namespace ClassLibrary1
         {
             return new Point(X + deltaX, Y + deltaY);
         }
+
+        public static Point operator+(Point lhs, Point rhs)
+        {
+            return default(Point);
+        }
+
+        public static Point operator++(Point p)
+        {
+            return default(Point);
+        }
     }
 
     public class Circle : System.Object
