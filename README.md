@@ -2,7 +2,7 @@
 
 Clone this repo to your machine by typing from the terminal (git bash or Wi):
 
-`git clone https://github.com/devrex/charp.advanced`
+`git clone https://github.com/devrex/csharp.advanced`
 
 When you need to update, do a `git stash && git pull -r && git stash pop`
 
