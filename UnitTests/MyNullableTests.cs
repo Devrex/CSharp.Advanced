@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace UnitTests
 {
+
     public class MyNullableTests
     {
         [Test]
