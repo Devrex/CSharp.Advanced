@@ -1,6 +1,9 @@
 using ClassLibrary1;
 using NUnit.Framework;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace UnitTests
 {
@@ -164,6 +167,7 @@ namespace UnitTests
             Assert.AreEqual(12, x);
             Assert.AreEqual(22, y);
         }
+
         [Test]
         public void Nullable()
         {
@@ -187,10 +191,87 @@ namespace UnitTests
 
             sum = Add(100, 100);
             Assert.AreEqual(200, sum);
-
-
         }
 
+
+        [Test]
+        public void ExtensionMethods()
+        {
+
+            var bigCircle = new Circle(200);
+            var littleCircle = new Circle(10);
+
+            Assert.IsTrue(bigCircle.IsBig());
+
+            //Can be called explicitly
+            Assert.IsTrue(MyExtensions.IsBig(bigCircle));
+        }
+
+            [Test]
+        public void TuplesAreComparedByValue()
+        {
+            var t1 = (1, 1);
+            var t2 = (1, 1);
+
+            Assert.AreEqual(t1,t2);
+            Assert.AreEqual(t1.GetHashCode(), t2.GetHashCode());
+
+            //Also applies to the old tuple syntax
+            var t3 = Tuple.Create(1, 1);
+            var t4 = Tuple.Create(1, 1);
+
+            Assert.AreEqual(t3, t4);
+            Assert.AreEqual(t3.GetHashCode(), t4.GetHashCode());
+        }
+
+        [Test]
+        public void CompareByValueOrReference()
+        {
+            var p1 = new Point(1, 1);
+            var p2 = new Point(1, 1);
+
+            //structs that have same field values are equal by default
+            Assert.AreEqual(p1, p2);
+            Assert.AreNotSame(p1,p2);
+
+            //classes are compared by reference
+            Circle c1 = new Circle(1);
+            Circle c2 = new Circle(1);
+
+            Assert.AreNotEqual(c1,c2);
+        }
+
+            [Test]
+        public void Covariance()
+        {
+            List<string> strings = new List<string>()
+            {
+                "Bart",
+                "Homer"
+            };
+
+            //does not compile
+            //List<object> objects = strings;
+
+            //does not compile
+            //List<object> objects = (List<object>) strings;
+
+            //type cast each item
+            List<object> explicitlyCastObjects = strings.Select(s => (object)s).ToList();
+
+            //smarter
+            var castObjects = strings.Cast<object>().ToList();
+            Assert.AreSame(typeof(List<object>), castObjects.GetType());
+
+
+            IList objects = strings;
+
+            foreach (var item in objects)
+            {
+                Assert.AreSame(typeof(String), item.GetType());
+            }
+
+        }
         [Test]
         public void TryWithOutVariablePattern()
         {

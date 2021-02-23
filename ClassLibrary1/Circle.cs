@@ -1,42 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ClassLibrary1
 {
-    /// <summary>
-    /// Make structs immutable and don't use too many fields as they 
-    /// are always copied when assigning on struct to another
-    /// </summary>
 
-    public struct Point
+    internal class SneakyCircle : Circle
     {
-        public readonly double X;
-        public readonly double Y;
-
-        public Point(double x, double y)
+        Circle _decoratedCircle;
+        public SneakyCircle(Circle circle) : base(0)
         {
-            X = x;
-            Y = y;
+            _decoratedCircle = circle;
         }
 
-        public Point Translate(double deltaX, double deltaY)
+        public override double Area()
         {
-            return new Point(X + deltaX, Y + deltaY);
-        }
-
-        public static Point operator+(Point lhs, Point rhs)
-        {
-            return default(Point);
-        }
-
-        public static Point operator++(Point p)
-        {
-            return default(Point);
+            return _decoratedCircle.Area() + 0.00001;
         }
     }
 
     public class Circle : System.Object
     {
-
         public const double PI = 3;
 
         public const string CircleName = "CircleName";
@@ -44,6 +28,12 @@ namespace ClassLibrary1
         public Circle()
         {
 
+        }
+
+        //factory method
+        public static Circle Create(int radius)
+        {
+            return new SneakyCircle(radius);
         }
 
         public Circle(double radius)
@@ -57,7 +47,7 @@ namespace ClassLibrary1
         public DateTime Foo { get; private set; } = DateTime.UtcNow;
 
 
-        public double Area() => Math.PI * Radius * Radius;
+        public virtual double Area() => Math.PI * Radius * Radius;
 
 
         private int myVar;
@@ -78,5 +68,66 @@ namespace ClassLibrary1
             myVar = newValue;
         }
 
+        //To compare objects by value, override Equals.
+        // (structs are compared by value by default)
+        // Always implement GetHashCode when overriding Equals
+        //public override bool Equals(object obj)
+        //{
+        //    return obj is Circle c && c.Radius == Radius;
+        //}
+
+
+    }
+
+    public abstract class Component
+    {
+        public abstract int Weight();
+    }
+
+    public class ConcreteComponent : Component
+    {
+        private int _weight;
+
+        public override int Weight()
+        {
+            return _weight;
+        }
+    }
+    
+    public class CompositeComponent : Component
+    {
+        List<Component> _children;
+
+        public void Add(Component c)
+        {
+            _children.Add(c);
+        }
+
+        public override int Weight()
+        {
+            return _children.Sum(c => c.Weight());
+        }
+    }
+
+    public interface IResolver
+    {
+        T Resolve<T>();
+        object Resolve(Type t);
+    }
+
+    public interface IRegistry
+    {
+        /// <summary>
+        /// Register scoped, new instance each resolution call
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        void Register<T>();
+
+        /// <summary>
+        /// Register singleton
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="instance"></param>
+        void Register<T>(T instance);
     }
 }

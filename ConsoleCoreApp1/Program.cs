@@ -7,7 +7,7 @@ namespace ConsoleCoreApp1
     {
         static void Main(string[] args)
         {
-
+            MyMath.Demo();
         }
 
 

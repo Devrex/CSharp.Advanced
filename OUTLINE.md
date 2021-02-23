@@ -3,7 +3,7 @@
 ## Day 1
 
 ### Introduction
-- .NET Core vs .NET Standard vs. .NET 4.x
+- .NET Core vs .NET Standard vs. .NET 4.x => .NET 5
 * Visual Studio features
 * Navigation and editing tips and tricks
 * Using the debugger
@@ -42,7 +42,7 @@
 * SOLID principles
 * DIP - Dependency Inversion Principle
 * Dependency Injection (DI)
-* DI Containers / frameworks
+* DI Containers / frameworks - builtin ASP.NET Core
 
 ## Day 3
 
