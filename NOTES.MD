@@ -78,6 +78,11 @@ class IdAndName {Name, Id}
  Christopher Alexander - arkitekt
 
  https://github.com/codebleeder/HeadfirstDesignPattern
+ 
+ Patterns of enterpris application architecture
+ https://www.martinfowler.com/eaaCatalog/
+
+ https://www.amazon.com/Working-Effectively-Legacy-Michael-Feathers/dp/0131177052
 
 Categories of patterns: (not a complete list!)
  * Creational
@@ -152,7 +157,7 @@ Proxy but with contraint on composing chain by passing base type to constructor
     SymmetricEncryptionStream
     AsymmetricEncryptionStream 
 
-    client -> stream.Write(data)
+    client - stream.Write(data)
 
     //compose decorator chains using constructors
     
@@ -162,3 +167,83 @@ Proxy but with contraint on composing chain by passing base type to constructor
         if (useCompression) s = new ZipCompressionStream(s);
         if (useDoubleCompression) s = new ArcCompressionStream(s);
     }
+
+### Abstract factory
+    
+
+    //ADO.NET System.Data
+    //IDbDataReader, IDbConnection, IDbCommand
+
+    //System.Data.SqlClient
+    //System.Data.MySql
+
+    //var connection = ...
+    ///    IDbCommand command = connection.CreateCommand();
+    ///    
+
+    //class MyDatabaseProvider : IDbProvider
+    //{
+    //    public IDbCommand CreateCommand { }
+    //    public IDbConnection CreateConnection() { }
+    //}
+
+## Reflection
+
+Code can examine itself, read it's own metadata
+Metadata included in assembly, as opposed to C or C++
+ - Names of types, name and type of members, method signatures, attributes
+Assembly - output of compiler, IL - intermediate language
+
+Reflector tool
+ILDASM - Intermediate Language disassembler ships with .NET
+dotPeek from Jetbrains
+Object Browser window in VS2019
+
+Types for reflection:
+
+System.Assembly - static factory methods
+instance methods: GetTypes(), GetClasses(), GetInterfaces()
+
+
+Type class: typeof(T), Type.From(string name), Object.GetType()
+instance methods: GetMembers(), GetMethods(), GetProperties(), GetConstructors()
+
+MethodInfo class describes a method arguments and types, return type, static/modifiers
+
+
+Shape s = new Circle();
+var type = s.GetType();
+Assert.IsTrue(type == typeof(Circle));
+
+type.IsInterface, IsAbstract, IsPublic
+
+Above is examples of reading, we can also execute code using reflection!
+
+MethodInfo.Invoke() (static methods, instance methods, property getters and setters)
+Constructor.Invoke()
+
+Reflection can access private fields and methods!
+
+Attributes - defining: Inherit System.Attribute, Attribute suffix is optional
+
+[]
+class TestMethodAttribute : System.Attribute
+
+@Component
+class MyTestClass {
+    [TestMethod]
+    public void MyMethod([FromBody][Required] int number)
+}
+
+Built in useful attributes
+[CallerMemberName]
+[Obsolete]
+[Serializable]
+
+Log : ILog
+{
+    public void Write(string message, [CallerMemberName] string caller = null)
+}
+
+Inside Widget.DoStuff()
+  _log.Write("hello world");

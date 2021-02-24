@@ -11,3 +11,16 @@
 2. Add another shape, Triangle to the Geometry example.
    (Keep it simple by assuming a horizontal base and using fields for width and height)
 3. Add a unit test that creates a triangle and checks the area()
+
+
+## Reflection 
+Building a unit test runner
+
+* Define one or more of attributes TestFixture, TestMethod, Ignore, ExpectedException
+
+* Idea: scan for types that have TestFixture attribute 
+   Assembly.GetClasses() -> GetAttributes() GetAttribute(nameof(TestMethodAttribute))
+
+   class Runner
+   {
+       public Runner(Assembly assemblyToScan){}

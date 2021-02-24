@@ -3,7 +3,11 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using MyStackFrame = ClassLibrary1.Hide.StackFrame;
 
 namespace UnitTests
 {
@@ -207,7 +211,75 @@ namespace UnitTests
             Assert.IsTrue(MyExtensions.IsBig(bigCircle));
         }
 
+
+        [Test]
+        public void CallerMemberDemo()
+        {
+            IJustCalled("to say I love you");
+
+        }
+
+        private void IJustCalled(string message, [CallerMemberName] string caller = null)
+        {
+            Assert.AreEqual("CallerMemberDemo", caller);
+
+            //If you want more info than just the name or want to look further up the stack...
+            var frame = new StackFrame(1);
+            Console.WriteLine(frame.GetMethod().ToString());
+        }
+
             [Test]
+        public void StackFrameDemo()
+        {
+            var vars = new Dictionary<string, string>();
+            vars["x"] = "10";
+            vars["y"] = "11";
+
+            var callStack = new MyStackFrame(vars, null);
+
+            Assert.AreEqual("10", callStack.Lookup("x"));
+            Assert.AreEqual("11", callStack.Lookup("y"));
+
+            //overshadows
+            var args = new Dictionary<string, string>();
+            args["x"] = "12";
+            args["z"] = "13";
+            callStack = callStack.NewFrame(args);
+            Assert.AreEqual("12", callStack.Lookup("x"));
+            Assert.AreEqual("11", callStack.Lookup("y"));
+            Assert.AreEqual("13", callStack.Lookup("z"));
+
+            callStack = callStack.Pop();
+            Assert.AreEqual("10", callStack.Lookup("x"));
+            Assert.AreEqual("11", callStack.Lookup("y"));
+            Assert.Catch<Exception>(() => callStack.Lookup("z"));
+        }
+
+
+        [Test]
+        public void DontConcatenateStrings()
+        {
+            var s = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+            var result = "";
+            for (int i = 0; i < 10000; i++)
+            {
+                result += s;
+            }
+        }
+
+        [Test]
+        public void UseAStringBuilder()
+        {
+            var builder = new StringBuilder();
+            var s = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+            for (int i = 0; i < 1000000; i++)
+            {
+                builder.Append(s);
+            }
+            var result = builder.ToString();
+        }
+
+        [Test]
         public void TuplesAreComparedByValue()
         {
             var t1 = (1, 1);

@@ -33,7 +33,7 @@ namespace ClassLibrary1
         //factory method
         public static Circle Create(int radius)
         {
-            return new SneakyCircle(radius);
+            return new SneakyCircle(new Circle(radius));
         }
 
         public Circle(double radius)
