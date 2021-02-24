@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using MyStackFrame = ClassLibrary1.Hide.StackFrame;
 
 namespace UnitTests
@@ -211,6 +212,42 @@ namespace UnitTests
             Assert.IsTrue(MyExtensions.IsBig(bigCircle));
         }
 
+        [Test]
+        public void CustomLinqOperator()
+        {
+            var multiplesOfThree = MyMath.NaturalNumbers().MyWhere(n => n % 3 == 0).AsQueryable<int>();
+            Assert.IsTrue(multiplesOfThree is IQueryable<int>);
+            Console.WriteLine(multiplesOfThree.GetType().FullName);            
+        }
+
+            [Test]
+        public void MessageBusDemo()
+        {
+            string orderDetails = null;
+
+            var subscription = MessageBus.Subscribe<OrderPlaced>(op =>
+            {
+                orderDetails = op.Details;
+                return Task.CompletedTask;
+            });
+
+            var orderPlaced = new OrderPlaced("4 semlor");
+
+            MessageBus.Publish(orderPlaced);
+
+            Assert.AreEqual("4 semlor", orderDetails);
+            MessageBus.Unsubscribe(subscription);
+
+            // verify unsubscribe
+            orderDetails = null;
+            MessageBus.Publish(orderPlaced);
+            Assert.IsNull(orderDetails);
+        }
+
+        private Task OnOrderPlaced(OrderPlaced orderPlaced)
+        {
+            return Task.CompletedTask;
+        }
 
         [Test]
         public void CallerMemberDemo()

@@ -47,7 +47,12 @@
 ## Day 3
 
 ### Reflection
-TBD 
+ * Exploring Assemblies
+ * Reading type informaton
+ * Reading and writing field values
+ * Calling methods
+ * Attributes
+ * Lab: Implement Unit test runner
 
 ### Event driven architectures
 * Events with the event keyword
@@ -64,5 +69,5 @@ TBD
 ### Advanced LINQ
 * Method syntax vs query syntax
 * Expression trees
-* Lazy evaluation
+* Lazy evaluation - deferred execution
 * SelectMany, GroupBy, etc

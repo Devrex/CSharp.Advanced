@@ -1,5 +1,6 @@
 ﻿using ClassLibrary1;
 using System;
+using System.Drawing;
 using System.Reflection;
 
 namespace ConsoleCoreApp1
@@ -11,12 +12,17 @@ namespace ConsoleCoreApp1
             var myAssembly = Assembly.GetExecutingAssembly();
             var runner = new Runner(myAssembly);
             var result = runner.Run();
-            foreach(var testResult in result)
-            {
-                Console.WriteLine(result);
-            }
 
-            //MyMath.Demo();
+            //remember the current textcolor so we can restore later
+            var oldColor = Console.ForegroundColor;
+
+            foreach (var testResult in result)
+            {
+                if (testResult.Passed) Console.ForegroundColor = ConsoleColor.Green;
+                else Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(testResult);                
+            }
+            Console.ForegroundColor = oldColor;
         }
     }
 }

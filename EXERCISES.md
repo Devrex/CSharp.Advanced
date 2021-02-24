@@ -16,11 +16,7 @@
 ## Reflection 
 Building a unit test runner
 
-* Define one or more of attributes TestFixture, TestMethod, Ignore, ExpectedException
-
-* Idea: scan for types that have TestFixture attribute 
-   Assembly.GetClasses() -> GetAttributes() GetAttribute(nameof(TestMethodAttribute))
-
-   class Runner
-   {
-       public Runner(Assembly assemblyToScan){}
+See the UnitTestRunner console project
+1. Implement the Runner class
+2. Author som test classes and run the program
+(Note: Suggested runner implementation can be found in Runner.Solution.cs)

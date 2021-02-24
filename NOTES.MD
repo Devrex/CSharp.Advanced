@@ -170,7 +170,6 @@ Proxy but with contraint on composing chain by passing base type to constructor
 
 ### Abstract factory
     
-
     //ADO.NET System.Data
     //IDbDataReader, IDbConnection, IDbCommand
 
@@ -247,3 +246,140 @@ Log : ILog
 
 Inside Widget.DoStuff()
   _log.Write("hello world");
+
+
+###  Threads
+
+```csharp
+Thread t = new Thread(ThreadDelegate);
+Thread.Sleep(0);
+t.Start(); 
+
+t.Join(); //block until t completes
+```
+Data synchronization. Immutable,
+thread safe collections ConcurrentDictionary, ConcurrentQueue
+
+Actor model -> Akka.Net, Proto.Actor Erlang
+Actor model handles synchronization by not sharing data, only
+passes immutable messages.
+
+First rule of distributed programming -> "Don't"
+First rule of multithreading, also "Don't"
+
+### Tasks vs Threads...
+Threads are heavy weight and managed by the OS / runtime.
+cCeating, destroying, switching threads is expensive.
+Tasks are lightweight, there can be millions.
+
+Java: ExecutorFramework.submit(Task)
+
+```csharp
+Task<List<Quote>> t = Task.Start(() => worker.GetQuotes())
+
+Task t1 = Task.Delay(ts);
+//avoid the following, use async / await instead
+t.IsCompleted
+t.Result //blocking call, will wait for result, can cause deadlocks
+t.ContinueWith(t => {...} )
+```
+
+### await / async
+```csharp
+private async Task<List<Quote>> GetQuotes(string ticker)
+{
+   var quotes = await dbContext.Quotes.Where(q => q.Ticker == ticker).ToListAsync();
+   //do something with quotes
+   return quotes;
+}
+```
+async keyword makes compiler rewrite method as a state machine
+A thread visits the state machine when there is work to do.
+
+* Don't use async keyword unless there is at least one await
+* don't use async/await if there is a single await as the last statement, instead just return the task!
+
+* A lambda can me marked async to allow awaiting within.
+
+* A void method can be marked async, but if it crashes the exception will be lost. Common practice in event handlers, such as Button.Click
+
+## Events
+
+use event keyword to define events.
+event <delegateType> <eventName>
+```csharp
+event Action<OrderPlaced> OrderPlaced;
+
+//fire event
+
+OrderPlaced.Invoke(new OrderPlaced(order));
+
+//subscribe
+var orderManager = new OrderManager();
+orderManager.OrderPlaced += (orderPlaced) => {
+    //handle event here
+}
+
+//or reference a method
+orderManager.OrderPlaced += HandleOrderPlaced;
+
+void HandleOrderPlaced(OrderPlaced orderPlaced) {...}
+```
+
+### Even less coupling
+Above, the subscriber needs a reference to the publisher and thus has a dependency.
+With the mediator pattern, consumers and producers only depend on the event types themselves and the mediator.
+
+### Mediator using dotnet style events
+In this example the events are domain specific and predefined. Sometimes this is a good thing.
+
+```csharp
+static class Events
+{
+    public static event Action<OrderPlaced> OrderPlaced;
+    //todo: other events
+
+    static internal FireOrderPlaced(OrderPlaced orderPlaced)
+    {
+        OrderPlaced.Invoke(orderPlaced);
+    }
+}
+```
+
+### Mediator take 2, pub/sub
+See MessageBus.cs in ClassLibary1
+
+
+### Advanced LINQ
+LINQ was introduced with .NET 3.5 together with var, anonymous 
+classes, extension methods, and more, all supporting the LINQ features.
+
+LINQ to objects is implemented as extension methods to IEnumerable and operate on framework collections or anything that implements IEnumerable.
+
+EF LINQ operators are implemented on DbSet, translates operator chain to SQL and maps back to entities.
+
+Linq2Sql - first ORM, before EF DbContext -> DbSet<T>
+
+See IQueryable and AsQueryable(), convert any IEnumerable
+
+deferred execution -> terminal operators trigger execution
+
+Sources: collection class, IEnumerable, EF DbSet<T>
+Intermediate operators: Select, Where, GroupBy, Join, etc
+Terminal operators: ToList, First, Single, SingleOrDefault, FirstOrDefault, Max, Min, Sum, Average, ToDictionary(), 
+
+How does EF translate this:
+
+```csharp
+   ctx.Customers.Where(c => c.Name == "Robert")
+      .Select(c => c.Id).ToList();
+```
+into this?
+
+```sql
+SELECT Id FROM Customers WHERE Name = "Robert"
+```
+Answer: Linq operators take Expression<Func<T,..>> and analyze the expression tree, see MyExtensions.MyWhere
+
+101 Linq Samples
+https://linqsamples.com/linq-to-objects/restriction/Where-numbers-lambda

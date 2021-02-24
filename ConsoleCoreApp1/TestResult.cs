@@ -1,4 +1,6 @@
-﻿namespace ConsoleCoreApp1
+﻿using System;
+
+namespace ConsoleCoreApp1
 {
     public class TestResult
     {
@@ -36,7 +38,7 @@
 
         public override string ToString()
         {
-            return "TODO";
+            return String.Format("{0,-30}{1}", TestName, Message);
         }
     }
 }
