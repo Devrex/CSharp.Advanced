@@ -10,6 +10,16 @@ namespace ClassLibrary1
         public delegate int BinaryOperator(int lhs, int rhs);
 
 
+        public static IEnumerable<int> NaturalNumbers()
+        {
+            int i = 1;
+            while (true)
+            {
+                yield return i;
+                i++;
+            }
+        }
+
         public static void Demo()
         {
             BinaryOperator myOperator = Add;
@@ -33,6 +43,18 @@ namespace ClassLibrary1
 
             //Send direct reference
             ApplyAndPrint(Add, 20, 20);
+
+            var someNumbers = NaturalNumbers()
+                .Where(n => n % 2 == 0)
+                .Skip(1000)
+                .Take(40)
+                .ToList();
+
+            foreach (var number in NaturalNumbers())
+            {
+                if (number > 1000) break;
+                Console.WriteLine(number);
+            }
         }
 
         private static int Negate(int a)
